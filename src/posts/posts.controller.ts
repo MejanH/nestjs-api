@@ -1,11 +1,14 @@
-import { Controller, Get, Param, Post, Req } from '@nestjs/common';
-import { Request } from 'express';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { CreatePostDto } from './dto/create-post.dto';
+import { PostsService } from './posts.service';
+import { PostType } from './interfaces/post';
 
 @Controller('posts')
 export class PostsController {
+  constructor(private postsService: PostsService) {}
   @Get()
-  findAll(@Req() request: Request) {
-    return {};
+  async findAll(): Promise<PostType[]> {
+    return this.postsService.findAll();
   }
 
   @Get(':id')
@@ -14,7 +17,7 @@ export class PostsController {
   }
 
   @Post('create')
-  createPost(@Req() request: Request) {
-    return request.body;
+  async create(@Body() body: CreatePostDto) {
+    this.postsService.create(body);
   }
 }
